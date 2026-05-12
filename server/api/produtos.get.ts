@@ -1,18 +1,6 @@
-import fs from 'node:fs'
-import path from 'node:path'
-
-function getDbPath() {
-  return path.resolve(process.cwd(), 'server/db.json')
-}
-
-function readDb() {
-  const raw = fs.readFileSync(getDbPath(), 'utf-8')
-  return JSON.parse(raw)
-}
-
 export default defineEventHandler((event) => {
   try {
-    const data = readDb()
+    const data = getDbData()
     const query = getQuery(event)
 
     let produtos = data.produtos

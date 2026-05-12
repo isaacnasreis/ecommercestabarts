@@ -1,19 +1,3 @@
-import fs from 'node:fs'
-import path from 'node:path'
-
-function getDbPath() {
-  return path.resolve(process.cwd(), 'server/db.json')
-}
-
-function readDb() {
-  const raw = fs.readFileSync(getDbPath(), 'utf-8')
-  return JSON.parse(raw)
-}
-
-function writeDb(data: any) {
-  fs.writeFileSync(getDbPath(), JSON.stringify(data, null, 2), 'utf-8')
-}
-
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
@@ -21,7 +5,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Nome, email e senha são obrigatórios' })
   }
 
-  const data = readDb()
+  const data = getDbData()
 
   // Verifica se email já existe
   const exists = data.profile.find((u: any) => u.email === body.email)
@@ -39,7 +23,7 @@ export default defineEventHandler(async (event) => {
   }
 
   data.profile.push(novoUsuario)
-  writeDb(data)
+  saveDbData(data)
 
   return {
     id: novoUsuario.id,

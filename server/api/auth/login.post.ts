@@ -1,15 +1,3 @@
-import fs from 'node:fs'
-import path from 'node:path'
-
-function getDbPath() {
-  return path.resolve(process.cwd(), 'server/db.json')
-}
-
-function readDb() {
-  const raw = fs.readFileSync(getDbPath(), 'utf-8')
-  return JSON.parse(raw)
-}
-
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
@@ -17,7 +5,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Email e senha são obrigatórios' })
   }
 
-  const data = readDb()
+  const data = getDbData()
   const user = data.profile.find(
     (u: any) => u.email === body.email && u.senha === body.senha
   )
